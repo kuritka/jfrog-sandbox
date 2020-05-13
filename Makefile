@@ -15,18 +15,14 @@ switch-to-sdc-nonprod:
 
 .PHONY: deploy-jfrog
 deploy-jfrog:
-	$call(deploly-jfrog-ha)
-
-.PHONY: deploy-pgadmin
-deploy-pgadmin:
-	helm repo add runix https://helm.runix.net/
-	helm upgrade --install pgadmin4 --set env.password=password --set env.email=admin@local.com --namespace $(DEFAULT_NAMESPACE) runix/pgadmin4
+	$call(deploy-jfrog-ha)
+	$call(deploy-pgadmin)
 
 .PHONY: destroy-jfrog
 destroy-jfrog:
 	kubectl delete -f deploy/namespace.yaml
 
-define deploly-jfrog-ha
+define deploy-jfrog-ha
 	kubectl apply -f deploy/namespace.yaml
 	helm repo add jfrog https://charts.jfrog.io
 	export MASTER_KEY=$(openssl rand -hex 32)
@@ -34,4 +30,9 @@ define deploly-jfrog-ha
 	helm upgrade --install artifactory-ha --set artifactory.masterKey=${MASTER_KEY} --namespace $(DEFAULT_NAMESPACE) jfrog/artifactory-ha
 	export DB_PASSWORD=$(kubectl get --namespace jfrog-sandbox $(kubectl get secret --namespace jfrog-sandbox -o name | grep postgresql) -o jsonpath="{.data.postgresql-password}" | base64 --decode)
 	@echo DB_PASSWORD: ${DB_PASSWORD}
+endef
+
+define deploy-pgadmin
+	helm repo add runix https://helm.runix.net/
+	helm upgrade --install pgadmin4 --set env.password=password --set env.email=admin@local.com --namespace $(DEFAULT_NAMESPACE) runix/pgadmin4
 endef
