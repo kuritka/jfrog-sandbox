@@ -15,15 +15,15 @@ switch-to-sdc-nonprod:
 
 .PHONY: deploy-jfrog
 deploy-jfrog:
-	$call(deploy-jfrog-ha)
-	$call(deploy-pgadmin)
+	kubectl apply -f deploy/namespace.yaml
+	$(call deploy-jfrog-ha)
+	$(call deploy-pgadmin)
 
 .PHONY: destroy-jfrog
 destroy-jfrog:
 	kubectl delete -f deploy/namespace.yaml
 
 define deploy-jfrog-ha
-	kubectl apply -f deploy/namespace.yaml
 	helm repo add jfrog https://charts.jfrog.io
 	export MASTER_KEY=$(openssl rand -hex 32)
 	@echo MASTER_KEY: ${MASTER_KEY}
