@@ -1,0 +1,7 @@
+pods are waiting..
+
+
+Events:
+  Type     Reason            Age                  From               Message
+  ----     ------            ----                 ----               -------
+  Warning  FailedScheduling  76s (x6 over 4m23s)  default-scheduler  pod has unbound immediate PersistentVolumeClaims (repeated 3 times)
