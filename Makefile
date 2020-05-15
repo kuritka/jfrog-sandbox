@@ -1,4 +1,5 @@
 DEFAULT_NAMESPACE ?= jfrog-sandbox
+PGADMIN_NAMESPACE ?= pgadmin-sandbox
 MASTER_KEY ?= $(shell openssl rand -hex 32)
 
 .PHONY: switch-to-local
@@ -73,7 +74,7 @@ define deploy-pgadmin
 	helm upgrade --install pgadmin4 \
 					--set env.password=password \
 					--set env.email=admin@local.com \
-					--set env.service.port=81 \
-					--namespace $(DEFAULT_NAMESPACE) runix/pgadmin4
+					--set env.service.port=83 \
+					--namespace $(PGADMIN_NAMESPACE) runix/pgadmin4
 endef
 

@@ -2,3 +2,8 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: "jfrog-sandbox"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "pgadmin-sandbox"
