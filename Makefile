@@ -4,19 +4,19 @@ MASTER_KEY ?= $(shell openssl rand -hex 32)
 
 .PHONY: switch-to-local
 switch-to-local:
-	cp -f ./.kube/local-ohmyglb/config ~/.kube/config
+	$(call switch, ./.kube/local-ohmyglb/config)
 
 .PHONY: switch-to-270-nonprod
 switch-to-270-nonprod:
-	cp -f ./.kube/remote-270-nonprod/config ~/.kube/config
+	$(call switch, ./.kube/remote-270-nonprod/config)
 
 .PHONY: switch-to-sdc-nonprod
 switch-to-sdc-nonprod:
-	cp -f ./.kube/remote-sdc-nonprod/config ~/.kube/config
+	$(call switch,./.kube/remote-sdc-nonprod/config)
 
 .PHONY: where
 where:
-	@kubectl config get-clusters
+	$(call where)
 
 .PHONY: deploy-jfrog
 deploy-jfrog:
@@ -78,3 +78,13 @@ define deploy-pgadmin
 					--namespace $(PGADMIN_NAMESPACE) runix/pgadmin4
 endef
 
+define where
+	@kubectl config get-clusters
+endef
+
+define switch
+	@echo "making backup and switching...."
+	@cp ~/.kube/config ~/.kube/config_`date +%Y%m%d_%H_%M_%S`
+	@cp -f $1 ~/.kube/config
+	$(call where)
+endef
